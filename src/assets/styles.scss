@@ -1,0 +1,23 @@
+.#{$PREFIX} {
+    &,
+    & * {
+        box-sizing: border-box;
+    }
+}
+
+.#{$PREFIX}-dom-container {
+    position: relative;
+    background: url(https://s2.loli.net/2021/12/22/6aItA1PZORk258q.jpg) no-repeat;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+
+    .canvas-layer {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+    }
+}
