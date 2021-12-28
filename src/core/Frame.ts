@@ -1,4 +1,4 @@
-import { DomContainer } from '~/container';
+import { DomContainer, IContainer } from '~/container';
 import { IDisposable } from '~/interface';
 import { AbsMountable } from '~/libs/Mountable';
 import { AbsShape } from '~/shapes';
@@ -13,7 +13,7 @@ export class Frame extends AbsMountable implements IDisposable {
 
     public shapes: AbsShape[] = [];
 
-    private container = new DomContainer();
+    private container: IContainer = new DomContainer();
 
     private tool?: AbsToolable;
 

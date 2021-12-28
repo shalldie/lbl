@@ -1,8 +1,8 @@
 import { MouseHandler } from '~/handlers';
-import { IDisposable } from '~/interface';
 import { AbsMountable } from '~/libs/Mountable';
+import { IContainer } from '.';
 
-export class DomContainer extends AbsMountable implements IDisposable {
+export class DomContainer extends AbsMountable implements IContainer {
     public dom = document.createElement('div');
 
     public mouseHandler = new MouseHandler(this.dom);

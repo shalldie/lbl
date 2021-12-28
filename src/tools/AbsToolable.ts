@@ -1,11 +1,11 @@
-import { DomContainer } from '~/container';
+import { IContainer } from '~/container';
 import { IDisposable } from '~/interface';
 import { EToolType, TToolType } from './tool.types';
 
 export abstract class AbsToolable implements IDisposable {
     public abstract type: TToolType;
 
-    public container!: DomContainer;
+    public container!: IContainer;
 
     public get dom() {
         return this.container.dom;
