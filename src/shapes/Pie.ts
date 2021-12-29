@@ -1,5 +1,5 @@
 import { AbsShape, IPoint } from '.';
-import { EShapeType } from './shape';
+import { EShapeType } from './Shape';
 
 export class Pie extends AbsShape {
     public type: EShapeType = EShapeType.Resizer;

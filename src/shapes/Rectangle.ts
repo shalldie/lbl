@@ -1,7 +1,7 @@
 import { IPoint } from '.';
 import { Pie } from './Pie';
-import { AbsShape, EShapeType } from './shape';
-import { ShapeDrag } from './shape.drag';
+import { AbsShape, EShapeType } from './Shape';
+import { ShapeDrag } from './Shape.drag';
 
 export class Rectangle extends AbsShape {
     width = 0;

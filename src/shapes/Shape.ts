@@ -1,8 +1,8 @@
 import { MouseHandler } from '~/handlers';
 import { IDisposable } from '~/interface';
-import { CanvasLayer } from '~/Layer';
+import { ILayer, CanvasLayer } from '~/Layer';
 import { AbsMountable } from '~/libs/Mountable';
-import { ShapeDrag } from './shape.drag';
+import { ShapeDrag } from './Shape.drag';
 
 export interface IPoint {
     x: number;
@@ -22,7 +22,7 @@ export abstract class AbsShape extends AbsMountable implements IDisposable, IPoi
     public active = false;
 
     // #region layer,dom,ctx
-    private _layer!: CanvasLayer;
+    private _layer!: ILayer;
 
     public get layer() {
         if (!this._layer) {
@@ -31,7 +31,7 @@ export abstract class AbsShape extends AbsMountable implements IDisposable, IPoi
         return this._layer;
     }
 
-    public set layer(layer: CanvasLayer) {
+    public set layer(layer: ILayer) {
         this._layer = layer;
     }
 

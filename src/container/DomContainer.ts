@@ -1,6 +1,6 @@
 import { MouseHandler } from '~/handlers';
 import { AbsMountable } from '~/libs/Mountable';
-import { IContainer } from '.';
+import { IContainer } from './Container';
 
 export class DomContainer extends AbsMountable implements IContainer {
     public dom = document.createElement('div');

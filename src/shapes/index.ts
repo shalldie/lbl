@@ -1,2 +1,2 @@
-export * from './shape';
+export * from './Shape';
 export * from './Rectangle';
