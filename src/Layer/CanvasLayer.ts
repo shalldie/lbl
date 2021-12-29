@@ -2,6 +2,14 @@ import { AbsMountable } from '~/libs/Mountable';
 import { debounce } from 'lodash';
 import { ILayer } from './Layer';
 
+/**
+ * canvas 实现的 layer
+ *
+ * @export
+ * @class CanvasLayer
+ * @extends {AbsMountable}
+ * @implements {ILayer}
+ */
 export class CanvasLayer extends AbsMountable implements ILayer {
     public dom = document.createElement('canvas');
 

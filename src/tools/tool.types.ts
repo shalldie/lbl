@@ -1,8 +1,12 @@
 import { enumxFactory } from '~/common/enumFactory';
-import { ToolSelect } from './ToolSelect';
+import { ToolRectangle } from './ToolRectangle';
 
 export const EToolType = enumxFactory({
-    SELECT: { id: 'SELECT' as const, label: '选择', tool: ToolSelect }
+    RECTANGLE: { id: 'RECTANGLE' as const, label: '矩形框', tool: ToolRectangle }
 });
 
 export type TToolType = typeof EToolType.idsEnum;
+
+export function createToolInstance(toolType: TToolType) {
+    return new (EToolType.getItemById(toolType)!.tool)();
+}

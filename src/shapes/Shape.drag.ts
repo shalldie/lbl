@@ -1,9 +1,16 @@
-import { offset2point } from '~/common/utils';
 import { EMouseAction, MouseHandler } from '~/handlers';
 import { IDisposable } from '~/interface';
 import { EventEmitter } from '~/libs/EventEmitter';
 import { AbsShape, IPoint } from '.';
 
+/**
+ * 拖动相关能力
+ *
+ * @export
+ * @class ShapeDrag
+ * @extends {EventEmitter}
+ * @implements {IDisposable}
+ */
 export class ShapeDrag extends EventEmitter implements IDisposable {
     constructor(private shape: AbsShape, private mouseHandler: MouseHandler) {
         super();
@@ -16,12 +23,10 @@ export class ShapeDrag extends EventEmitter implements IDisposable {
     private lastShapePoint: IPoint = { x: 0, y: 0 };
     private lastMousedownPoint: IPoint = { x: 0, y: 0 };
 
-    private handleMousedown = (ex: MouseEvent) => {
+    private handleMousedown = (point: IPoint) => {
         if (!this.shape.active) {
             return;
         }
-
-        const point = offset2point(ex);
 
         if (!this.shape.contains(point)) {
             return;
@@ -42,19 +47,19 @@ export class ShapeDrag extends EventEmitter implements IDisposable {
         this.canDrag = false;
     };
 
-    private handleMousemove = (ex: MouseEvent) => {
+    private handleMousemove = (point: IPoint) => {
         if (!this.canDrag) {
             return;
         }
 
-        const { x, y } = offset2point(ex);
+        const { x, y } = point;
 
         this.shape.x = x - this.lastMousedownPoint.x + this.lastShapePoint.x;
         this.shape.y = y - this.lastMousedownPoint.y + this.lastShapePoint.y;
         this.shape.draw();
-        this.emit('drag', { x, y });
+        this.emit('drag', point);
     };
-    private eventMap = new Map<EMouseAction, (ex: MouseEvent) => void>([
+    private eventMap = new Map<EMouseAction, (ex: IPoint) => void>([
         [EMouseAction.mousedown, this.handleMousedown],
         [EMouseAction.mouseup, this.handleMouseup],
         [EMouseAction.mousemove, this.handleMousemove],

@@ -1,3 +1,4 @@
+import { ECursor } from '~/core/StateTree';
 import { MouseHandler } from '~/handlers';
 import { IDisposable } from '~/interface';
 import { ILayer, CanvasLayer } from '~/Layer';
@@ -14,12 +15,35 @@ export enum EShapeType {
     Rectangle
 }
 
+/**
+ * 所有 shape 的基类
+ *
+ * @export
+ * @abstract
+ * @class AbsShape
+ * @extends {AbsMountable}
+ * @implements {IDisposable}
+ * @implements {IPoint}
+ */
 export abstract class AbsShape extends AbsMountable implements IDisposable, IPoint {
     public x = 0;
     public y = 0;
 
     public type = EShapeType.Rectangle;
-    public active = false;
+
+    // #region active
+    private _active = false;
+    public get active() {
+        return this._active;
+    }
+    public set active(active: boolean) {
+        if (active === this._active) {
+            return;
+        }
+        this._active = active;
+        this.draw();
+    }
+    // #endregion
 
     // #region layer,dom,ctx
     private _layer!: ILayer;
@@ -84,5 +108,9 @@ export abstract class AbsShape extends AbsMountable implements IDisposable, IPoi
     public dispose(): void {
         this.drag?.dispose();
         this.layer.dispose();
+    }
+
+    public activeCursor(_point: IPoint): ECursor | null {
+        return null;
     }
 }

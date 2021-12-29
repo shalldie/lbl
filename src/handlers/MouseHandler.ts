@@ -1,5 +1,7 @@
 import { EventEmitter } from '~/libs/EventEmitter';
 import { IDisposable } from '~/interface';
+import { IPoint } from '~/shapes';
+import { offset2point } from '~/common/utils';
 
 export enum EMouseAction {
     mousedown = 'mousedown',
@@ -9,14 +11,22 @@ export enum EMouseAction {
     click = 'click'
 }
 
+/**
+ * 鼠标事件
+ *
+ * @export
+ * @class MouseHandler
+ * @extends {EventEmitter}
+ * @implements {IDisposable}
+ */
 export class MouseHandler extends EventEmitter implements IDisposable {
     private _events = new Map<EMouseAction, null | ((ex: MouseEvent) => void)>([
         //
         [EMouseAction.mousedown, null],
         [EMouseAction.mousemove, null],
         [EMouseAction.mouseup, null],
-        [EMouseAction.mouseout, null],
-        [EMouseAction.click, null]
+        [EMouseAction.mouseout, null]
+        // [EMouseAction.click, null]
     ]);
 
     private _dom: HTMLElement;
@@ -27,17 +37,33 @@ export class MouseHandler extends EventEmitter implements IDisposable {
         this.initialize();
     }
 
+    private lastMousedownPoint: IPoint = { x: 0, y: 0 };
+
+    private getSqrLen(p1: IPoint, p2: IPoint) {
+        return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+    }
+
     private initialize() {
         for (const [eventName] of this._events) {
             const action = (ex: MouseEvent) => {
-                this.emit(eventName, ex);
+                const curPoint = offset2point(ex);
+                if (eventName === EMouseAction.mousedown) {
+                    this.lastMousedownPoint = curPoint;
+                }
+                this.emit(eventName, curPoint);
+                if (eventName === EMouseAction.mouseup) {
+                    // 移动距离小于6，才算 click
+                    if (this.getSqrLen(curPoint, this.lastMousedownPoint) < 6) {
+                        this.emit(EMouseAction.click, curPoint);
+                    }
+                }
             };
             this._dom.addEventListener(eventName, action);
             this._events.set(eventName, action);
         }
     }
 
-    public on(event: EMouseAction, listener: (ex: MouseEvent) => void): void {
+    public on(event: EMouseAction, listener: (point: IPoint) => void): void {
         super.on(event, listener);
     }
 
