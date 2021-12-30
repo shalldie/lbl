@@ -1,9 +1,8 @@
 import { ECursor } from '~/core/StateTree';
-import { MouseHandler } from '~/handlers';
+import { IDragEvent } from '~/handlers/DragHandler';
 import { IDisposable } from '~/interface';
 import { ILayer, CanvasLayer } from '~/Layer';
 import { AbsMountable } from '~/libs/Mountable';
-import { ShapeDrag } from './Shape.drag';
 
 export interface IPoint {
     x: number;
@@ -26,8 +25,10 @@ export enum EShapeType {
  * @implements {IPoint}
  */
 export abstract class AbsShape extends AbsMountable implements IDisposable, IPoint {
+    // #region 坐标
     public x = 0;
     public y = 0;
+    // #endregion
 
     public type = EShapeType.Rectangle;
 
@@ -69,11 +70,34 @@ export abstract class AbsShape extends AbsMountable implements IDisposable, IPoi
     // #endregion
 
     // #region drag
-    private drag: ShapeDrag | undefined;
-    public makeDragable(mouseHandler: MouseHandler) {
-        this.drag?.dispose();
-        this.drag = new ShapeDrag(this, mouseHandler);
+    public canDrag = false;
+    public dragStartPoint!: IPoint;
+    public handleDragStart(ev: IDragEvent) {
+        if (!this.contains(ev.dragStart)) {
+            return;
+        }
+        this.canDrag = true;
+        this.dragStartPoint = {
+            x: this.x,
+            y: this.y
+        };
     }
+
+    public handleDragMove(ev: IDragEvent) {
+        if (!this.active || !this.canDrag) {
+            return;
+        }
+        const { dragOffset } = ev;
+
+        this.x = this.dragStartPoint.x + dragOffset.x;
+        this.y = this.dragStartPoint.y + dragOffset.y;
+        this.draw();
+    }
+
+    public handleDragEnd(_ev: IDragEvent) {
+        this.canDrag = false;
+    }
+
     // #endregion
 
     // #region canvas 相关
@@ -106,7 +130,6 @@ export abstract class AbsShape extends AbsMountable implements IDisposable, IPoi
     public abstract contains(point: IPoint): boolean;
 
     public dispose(): void {
-        this.drag?.dispose();
         this.layer.dispose();
     }
 

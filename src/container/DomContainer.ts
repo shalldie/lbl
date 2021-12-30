@@ -1,5 +1,6 @@
 import { StateTree } from '~/core/StateTree';
 import { CursorHandler, MouseHandler } from '~/handlers';
+import { DragHandler } from '~/handlers/DragHandler';
 import { IDisposable } from '~/interface';
 import { AbsMountable } from '~/libs/Mountable';
 import { IContainer } from './Container';
@@ -22,8 +23,9 @@ export class DomContainer extends AbsMountable implements IContainer {
         );
 
         this.handlers.push(
-            // cursor
-            new CursorHandler(this.state, this.mouseHandler)
+            //
+            new CursorHandler(this.state, this.mouseHandler), // cursor
+            new DragHandler(this.state, this.mouseHandler) // drag
         );
         this.listenCursor();
     }

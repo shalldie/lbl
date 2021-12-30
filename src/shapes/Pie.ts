@@ -13,6 +13,8 @@ export class Pie extends AbsShape {
 
     public r = 6; // 半径
 
+    public fillStyle = '#047bd88c';
+
     constructor(options: Partial<Pie> = {}) {
         super();
         Object.assign(this, options);
@@ -22,9 +24,14 @@ export class Pie extends AbsShape {
         const ctx = this.ctx;
 
         // 画圆、边框
-        ctx.fillStyle = '#fff';
-        ctx.strokeStyle = '#2ad';
-        ctx.lineWidth = 1;
+        ctx.fillStyle = this.fillStyle;
+        if (this.active) {
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+        } else {
+            ctx.strokeStyle = '#2ad';
+            ctx.lineWidth = 2;
+        }
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
         ctx.closePath();
@@ -32,7 +39,13 @@ export class Pie extends AbsShape {
         ctx.stroke();
     }
 
-    public contains({ x, y }: IPoint): boolean {
-        return Math.sqrt(Math.pow(Math.abs(x - this.x), 2) + Math.pow(Math.abs(y - this.y), 2)) < this.r;
+    public contains(point: IPoint): boolean {
+        const { x, y } = point;
+
+        const xf = Math.pow(x - this.x, 2);
+        const yf = Math.pow(y - this.y, 2);
+        // console.log(xf, yf, Math.sqrt(xf + yf));
+        // console.log(Math.sqrt(xf + yf) <= this.r);
+        return Math.sqrt(xf + yf) <= this.r;
     }
 }

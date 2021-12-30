@@ -1,13 +1,10 @@
-import { DomContainer } from './container';
-import { EMouseAction } from './handlers';
 import './dev.scss';
 import './assets/styles.scss';
-import { Pie } from './shapes/Pie';
 import { sleep } from './common/utils';
 import { Rectangle } from './shapes';
-import { CanvasLayer } from './Layer';
 import { Frame } from './core';
 import { EToolType } from '~/tools';
+import { Pie } from './shapes/Pie';
 
 let ff: Frame;
 
@@ -47,22 +44,32 @@ async function main() {
     await sleep();
     // rect.active = true;
     rect.draw();
-    rect.makeDragable(ff.container.mouseHandler);
+    ff.state.shapes.push(rect);
 
-    const rect2 = new Rectangle({
-        x: 150,
-        y: 50,
-        width: 200,
-        height: 100
-    });
-    // rect.layer = layer;
-    rect2.mount(ff.container.dom);
-    await sleep();
-    // rect2.active = true;
-    rect2.draw();
-    rect2.makeDragable(ff.container.mouseHandler);
+    // const rect2 = new Rectangle({
+    //     x: 150,
+    //     y: 50,
+    //     width: 200,
+    //     height: 100
+    // });
+    // // rect.layer = layer;
+    // rect2.mount(ff.container.dom);
+    // await sleep();
+    // // rect2.active = true;
+    // rect2.draw();
 
-    ff.state.shapes.push(rect, rect2);
+    // const pie = new Pie({
+    //     x: 150,
+    //     y: 150,
+    //     r: 30
+    // });
+    // // rect.layer = layer;
+    // pie.mount(ff.container.dom);
+    // await sleep();
+    // // rect2.active = true;
+    // pie.draw();
+
+    // ff.state.shapes.push(rect, rect2, pie);
 
     // container.mouseHandler.on(EMouseAction.click, async ex => {
     //     const { offsetX, offsetY } = ex;

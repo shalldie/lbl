@@ -67,6 +67,10 @@ export class MouseHandler extends EventEmitter implements IDisposable {
         super.on(event, listener);
     }
 
+    public emit(event: EMouseAction, point: IPoint): void {
+        super.emit(event, point);
+    }
+
     public dispose(): void {
         for (const [eventName, eventHandler] of this._events) {
             if (eventHandler) {

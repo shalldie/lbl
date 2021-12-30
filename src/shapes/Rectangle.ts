@@ -1,3 +1,5 @@
+import { ECursor } from '~/core/StateTree';
+import { IDragEvent } from '~/handlers/DragHandler';
 import { IPoint } from '.';
 import { Pie } from './Pie';
 import { AbsShape, EShapeType } from './Shape';
@@ -13,11 +15,33 @@ export class Rectangle extends AbsShape {
     width = 0;
     height = 0;
 
+    rnd = Math.random();
+
     public type: EShapeType = EShapeType.Rectangle;
 
     public pies = Array(4)
         .fill(null)
-        .map(() => new Pie());
+        .map(() => new Pie({ fillStyle: '#fff' }));
+
+    private updatePiePoints() {
+        const pies = this.pies;
+        Object.assign(pies[0], {
+            x: this.x,
+            y: this.y
+        });
+        Object.assign(pies[1], {
+            x: this.x + this.width,
+            y: this.y
+        });
+        Object.assign(pies[2], {
+            x: this.x,
+            y: this.y + this.height
+        });
+        Object.assign(pies[3], {
+            x: this.x + this.width,
+            y: this.y + this.height
+        });
+    }
 
     constructor(options: Partial<Rectangle> = {}) {
         super();
@@ -25,6 +49,76 @@ export class Rectangle extends AbsShape {
         this.pies.forEach(pie => {
             pie.layer = this.layer;
         });
+    }
+
+    private handleDragPies(ev: IDragEvent) {
+        if (!this.dragPie) {
+            return;
+        }
+        const pieIndex = this.pies.indexOf(this.dragPie);
+        const { dragOffset } = ev;
+
+        switch (pieIndex) {
+            case 0:
+                this.x = this.dragStartPoint.x + dragOffset.x;
+                this.y = this.dragStartPoint.y + dragOffset.y;
+                this.width = this.dragStartWH.width - dragOffset.x;
+                this.height = this.dragStartWH.height - dragOffset.y;
+                break;
+            case 1:
+                // this.x = this.dragStartPoint.x + dragOffset.x;
+                this.y = this.dragStartPoint.y + dragOffset.y;
+                this.width = this.dragStartWH.width + dragOffset.x;
+                this.height = this.dragStartWH.height - dragOffset.y;
+                break;
+            case 2:
+                this.x = this.dragStartPoint.x + dragOffset.x;
+                // this.y = this.dragStartPoint.y + dragOffset.y;
+                this.width = this.dragStartWH.width - dragOffset.x;
+                this.height = this.dragStartWH.height + dragOffset.y;
+                break;
+            case 3:
+                // this.x = this.dragStartPoint.x + dragOffset.x;
+                // this.y = this.dragStartPoint.y + dragOffset.y;
+                this.width = this.dragStartWH.width + dragOffset.x;
+                this.height = this.dragStartWH.height + dragOffset.y;
+                break;
+        }
+    }
+
+    private dragPie?: Pie;
+    private dragStartWH = { width: 0, height: 0 };
+    public handleDragStart(ev: IDragEvent): void {
+        super.handleDragStart(ev);
+        this.dragPie = this.getContainsPie(ev.dragStart);
+        this.dragStartWH = { width: this.width, height: this.height };
+    }
+
+    public handleDragMove(ev: IDragEvent): void {
+        if (!this.active || !this.canDrag) {
+            return;
+        }
+
+        if (this.dragPie) {
+            // console.log(this.dragStartPoint);
+            this.handleDragPies(ev);
+            this.draw();
+        } else {
+            super.handleDragMove(ev);
+        }
+    }
+
+    public handleDragEnd(ev: IDragEvent): void {
+        super.handleDragEnd(ev);
+        // 处理反方向
+        if (this.width < 0) {
+            this.width = Math.abs(this.width);
+            this.x -= this.width;
+        }
+        if (this.height < 0) {
+            this.height = Math.abs(this.height);
+            this.y -= this.height;
+        }
     }
 
     public draw(): void {
@@ -48,29 +142,22 @@ export class Rectangle extends AbsShape {
             return;
         }
         // pies
-        const pies = this.pies;
-        Object.assign(pies[0], {
-            x: this.x,
-            y: this.y
-        });
-        Object.assign(pies[1], {
-            x: this.x + this.width,
-            y: this.y
-        });
-        Object.assign(pies[2], {
-            x: this.x,
-            y: this.y + this.height
-        });
-        Object.assign(pies[3], {
-            x: this.x + this.width,
-            y: this.y + this.height
-        });
-        for (const pie of pies) {
+        this.updatePiePoints();
+        for (const pie of this.pies) {
             pie.draw();
         }
     }
 
-    public contains({ x, y }: IPoint): boolean {
+    private getContainsPie(point: IPoint) {
+        return this.pies.find(n => n.contains(point));
+    }
+
+    public contains(point: IPoint): boolean {
+        if (this.getContainsPie(point)) {
+            return true;
+        }
+
+        const { x, y } = point;
         return (
             x >= this.x &&
             //
@@ -78,5 +165,12 @@ export class Rectangle extends AbsShape {
             y >= this.y &&
             y < this.y + this.height
         );
+    }
+
+    public activeCursor(_point: IPoint): ECursor | null {
+        if (this.getContainsPie(_point)) {
+            return ECursor.crosshair;
+        }
+        return null;
     }
 }
