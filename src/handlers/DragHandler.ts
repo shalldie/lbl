@@ -85,12 +85,15 @@ export class DragHandler extends EventEmitter implements IDisposable {
         switch (event) {
             case 'dragStart':
                 this.state.shapes.forEach(n => n.handleDragStart(ev));
+                this.state.tool.handleDragStart(ev);
                 break;
             case 'dragMove':
                 this.state.shapes.forEach(n => n.handleDragMove(ev));
+                this.state.tool.handleDragMove(ev);
                 break;
             case 'dragEnd':
                 this.state.shapes.forEach(n => n.handleDragEnd(ev));
+                this.state.tool.handleDragEnd(ev);
                 break;
         }
     }

@@ -1,4 +1,5 @@
 import { enumxFactory } from '~/common/enumFactory';
+import { StateTree } from '~/core/StateTree';
 import { ToolRectangle } from './ToolRectangle';
 
 export const EToolType = enumxFactory({
@@ -7,6 +8,6 @@ export const EToolType = enumxFactory({
 
 export type TToolType = typeof EToolType.idsEnum;
 
-export function createToolInstance(toolType: TToolType) {
-    return new (EToolType.getItemById(toolType)!.tool)();
+export function createToolInstance(state: StateTree, toolType: TToolType) {
+    return new (EToolType.getItemById(toolType)!.tool)(state);
 }

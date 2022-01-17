@@ -3,6 +3,7 @@ import { CursorHandler, MouseHandler } from '~/handlers';
 import { DragHandler } from '~/handlers/DragHandler';
 import { IDisposable } from '~/interface';
 import { AbsMountable } from '~/libs/Mountable';
+import { AbsShape } from '~/shapes';
 import { IContainer } from './Container';
 
 export class DomContainer extends AbsMountable implements IContainer {
@@ -17,6 +18,9 @@ export class DomContainer extends AbsMountable implements IContainer {
     constructor(state: StateTree) {
         super();
         this.state = state;
+        this.state.on('add-shape', (shape: AbsShape) => {
+            this.dom.appendChild(shape.dom);
+        });
         this.dom.classList.add(
             import.meta.env.VITE_CSS_PREFIX as string,
             `${import.meta.env.VITE_CSS_PREFIX}-dom-container`

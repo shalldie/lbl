@@ -65,7 +65,7 @@ export abstract class AbsShape extends AbsMountable implements IDisposable, IPoi
     }
 
     public get ctx() {
-        return this.dom.getContext('2d')!;
+        return this.layer.ctx;
     }
     // #endregion
 

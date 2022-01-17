@@ -1,7 +1,7 @@
 import { EventEmitter } from '~/libs/EventEmitter';
 import { IDisposable } from '~/interface';
 import { IPoint } from '~/shapes';
-import { offset2point } from '~/common/utils';
+import { getSqrLen, offset2point } from '~/common/utils';
 
 export enum EMouseAction {
     mousedown = 'mousedown',
@@ -39,10 +39,6 @@ export class MouseHandler extends EventEmitter implements IDisposable {
 
     private lastMousedownPoint: IPoint = { x: 0, y: 0 };
 
-    private getSqrLen(p1: IPoint, p2: IPoint) {
-        return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
-    }
-
     private initialize() {
         for (const [eventName] of this._events) {
             const action = (ex: MouseEvent) => {
@@ -53,7 +49,7 @@ export class MouseHandler extends EventEmitter implements IDisposable {
                 this.emit(eventName, curPoint);
                 if (eventName === EMouseAction.mouseup) {
                     // 移动距离小于6，才算 click
-                    if (this.getSqrLen(curPoint, this.lastMousedownPoint) < 6) {
+                    if (getSqrLen(curPoint, this.lastMousedownPoint) < 6) {
                         this.emit(EMouseAction.click, curPoint);
                     }
                 }

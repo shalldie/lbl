@@ -49,6 +49,7 @@ export class Rectangle extends AbsShape {
         this.pies.forEach(pie => {
             pie.layer = this.layer;
         });
+        this.updatePiePoints();
     }
 
     private handleDragPies(ev: IDragEvent) {
@@ -95,6 +96,7 @@ export class Rectangle extends AbsShape {
     }
 
     public handleDragMove(ev: IDragEvent): void {
+        console.log(this.canDrag);
         if (!this.active || !this.canDrag) {
             return;
         }

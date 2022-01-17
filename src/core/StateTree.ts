@@ -19,7 +19,7 @@ export enum ECursor {
 }
 
 export class StateTree extends EventEmitter implements IDisposable {
-    public _tool: AbsToolable = createToolInstance(EToolType.RECTANGLE);
+    private _tool: AbsToolable = createToolInstance(this, EToolType.RECTANGLE);
 
     public get tool() {
         return this._tool;

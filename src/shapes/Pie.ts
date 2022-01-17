@@ -1,3 +1,4 @@
+import { getSqrLen } from '~/common/utils';
 import { AbsShape, IPoint } from '.';
 import { EShapeType } from './Shape';
 
@@ -40,12 +41,6 @@ export class Pie extends AbsShape {
     }
 
     public contains(point: IPoint): boolean {
-        const { x, y } = point;
-
-        const xf = Math.pow(x - this.x, 2);
-        const yf = Math.pow(y - this.y, 2);
-        // console.log(xf, yf, Math.sqrt(xf + yf));
-        // console.log(Math.sqrt(xf + yf) <= this.r);
-        return Math.sqrt(xf + yf) <= this.r;
+        return getSqrLen(this, point) <= this.r;
     }
 }
