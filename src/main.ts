@@ -33,18 +33,18 @@ async function main() {
     // const layer = new CanvasLayer();
     // layer.mount(container.dom);
 
-    const rect = new Rectangle({
-        x: 50,
-        y: 50,
-        width: 200,
-        height: 100
-    });
-    // rect.layer = layer;
-    rect.mount(ff.container.dom);
-    await sleep();
-    // rect.active = true;
-    rect.draw();
-    ff.state.shapes.push(rect);
+    // const rect = new Rectangle({
+    //     x: 50,
+    //     y: 50,
+    //     width: 200,
+    //     height: 100
+    // });
+    // // rect.layer = layer;
+    // rect.mount(ff.container.dom);
+    // await sleep();
+    // // rect.active = true;
+    // rect.draw();
+    // ff.state.shapes.push(rect);
 
     // const rect2 = new Rectangle({
     //     x: 150,

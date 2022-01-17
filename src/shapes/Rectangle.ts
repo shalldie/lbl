@@ -121,6 +121,7 @@ export class Rectangle extends AbsShape {
             this.height = Math.abs(this.height);
             this.y -= this.height;
         }
+        this.updatePiePoints();
     }
 
     public draw(): void {
